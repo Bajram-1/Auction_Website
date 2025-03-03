@@ -13,9 +13,9 @@ namespace Auction_Website.DAL.Entities
     {
         [DataType(DataType.Currency)]
         public decimal Wallet { get; set; } = 1000.00m;
-        //public ICollection<Auction> AuctionsCreated { get; set; }
-        //public ICollection<Bid> Bids { get; set; }
-        //public ICollection<Transfer> TransfersSent { get; set; }
-        //public ICollection<Transfer> TransfersReceived { get; set; }
+        public ICollection<Auction> AuctionsCreated { get; set; }
+        public ICollection<Bid> Bids { get; set; }
+        public ICollection<Transfer> TransfersSent { get; set; }
+        public ICollection<Transfer> TransfersReceived { get; set; }
     }
 }
