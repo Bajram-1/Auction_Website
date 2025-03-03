@@ -27,7 +27,7 @@ namespace Auction_Website.DAL.Entities
         public DateTime EndTime { get; set; }
         public bool IsClosed { get; set; } = false;
         [Required]
-        public string CreatedByUserId { get; set; }
+        public int CreatedByUserId { get; set; }
         [ForeignKey("CreatedByUserId")]
         public virtual ApplicationUser CreatedByUser { get; set; }
         public virtual ICollection<Bid> Bids { get; set; } = new List<Bid>();

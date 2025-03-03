@@ -15,10 +15,10 @@ namespace Auction_Website.DAL.Entities
         [Required]
         public decimal Amount { get; set; }
         [Required]
-        public string FromUserId { get; set; }
+        public int FromUserId { get; set; }
 
         [Required]
-        public string ToUserId { get; set; }
+        public int ToUserId { get; set; }
 
         [Required]
         public DateTime TransferDate { get; set; } = DateTime.UtcNow;
