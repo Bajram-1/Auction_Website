@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -10,12 +11,14 @@ namespace Auction_Website.DAL.Entities
 {
     public class Auction
     {
+        [Key]
         public int AuctionId { get; set; }
         [Required]
         [StringLength(100)]
         public string Title { get; set; }
         [Required]
         public string Description { get; set; }
+        [Required]
         [DataType(DataType.Currency)]
         public decimal StartingPrice { get; set; }
         [Required]
@@ -23,8 +26,10 @@ namespace Auction_Website.DAL.Entities
         [Required]
         public DateTime EndTime { get; set; }
         public bool IsClosed { get; set; } = false;
-        public int CreatedByUserId { get; set; }
-        public ApplicationUser CreatedByUser { get; set; }
-        public ICollection<Bid> Bids { get; set; }
+        [Required]
+        public string CreatedByUserId { get; set; }
+        [ForeignKey("CreatedByUserId")]
+        public virtual ApplicationUser CreatedByUser { get; set; }
+        public virtual ICollection<Bid> Bids { get; set; } = new List<Bid>();
     }
 }
