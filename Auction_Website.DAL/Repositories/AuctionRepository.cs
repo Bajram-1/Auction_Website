@@ -11,12 +11,7 @@ namespace Auction_Website.DAL.Repositories
 {
     public class AuctionRepository : Repository<Auction>, IAuctionRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public AuctionRepository(ApplicationDbContext context) : base(context)
-        {
-            _context = context;
-        }
+        public AuctionRepository(ApplicationDbContext context) : base(context) { }
 
         public async Task<IEnumerable<Auction>> GetActiveAuctionsAsync()
         {
@@ -26,7 +21,12 @@ namespace Auction_Website.DAL.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Auction>> GetAuctionsByUserIdAsync(int userId)
+        public async Task<Auction> GetAuctionByIdAsync(int auctionId)
+        {
+            return await _context.Auctions.FirstOrDefaultAsync(a => a.AuctionId == auctionId);
+        }
+
+        public async Task<IEnumerable<Auction>> GetAuctionsByUserIdAsync(string userId)
         {
             return await _context.Auctions
                 .Where(a => a.CreatedByUserId == userId)

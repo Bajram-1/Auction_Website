@@ -10,6 +10,7 @@ namespace Auction_Website.DAL.IRepositories
     public interface IAuctionRepository : IRepository<Auction>
     {
         Task<IEnumerable<Auction>> GetActiveAuctionsAsync();
-        Task<IEnumerable<Auction>> GetAuctionsByUserIdAsync(int userId);
+        Task<IEnumerable<Auction>> GetAuctionsByUserIdAsync(string userId);
+        Task<Auction> GetAuctionByIdAsync(int auctionId);
     }
 }
