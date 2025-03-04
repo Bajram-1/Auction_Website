@@ -9,6 +9,6 @@ namespace Auction_Website.DAL.IRepositories
 {
     public interface ITransferRepository : IRepository<Transfer>
     {
-        Task<IEnumerable<Transfer>> GetTransfersByUserIdAsync(int userId);
+        Task<IEnumerable<Transfer>> GetTransfersByUserIdAsync(string userId);
     }
 }

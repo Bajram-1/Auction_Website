@@ -18,7 +18,7 @@ namespace Auction_Website.DAL.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Transfer>> GetTransfersByUserIdAsync(int userId)
+        public async Task<IEnumerable<Transfer>> GetTransfersByUserIdAsync(string userId)
         {
             return await _context.Transfers
                 .Where(t => t.FromUserId == userId || t.ToUserId == userId)
