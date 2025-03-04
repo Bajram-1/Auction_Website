@@ -20,30 +20,6 @@ namespace Auction_Website.DAL
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Auction>()
-                .HasMany(a => a.Bids)
-                .WithOne(b => b.Auction)
-                .HasForeignKey(b => b.AuctionId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<ApplicationUser>()
-                .HasMany(u => u.Bids)
-                .WithOne(b => b.User)
-                .HasForeignKey(b => b.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<ApplicationUser>()
-                .HasMany(u => u.TransfersSent)
-                .WithOne(t => t.FromUser)
-                .HasForeignKey(t => t.FromUserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<ApplicationUser>()
-                .HasMany(u => u.TransfersReceived)
-                .WithOne(t => t.ToUser)
-                .HasForeignKey(t => t.ToUserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
