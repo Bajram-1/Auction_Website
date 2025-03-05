@@ -1,12 +1,12 @@
-﻿using Auction_Website.BLL.DTO;
-using Auction_Website.BLL.DTO.Requests;
-using Auction_Website.BLL.DTO.ViewModels;
+﻿using Auction_Website.BLL.DTO.Requests;
 using Auction_Website.BLL.IServices;
 using Auction_Website.DAL;
 using Auction_Website.DAL.Entities;
 using Auction_Website.DAL.IRepositories;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Memory;
+using Auction_Website.UI.Hubs;
 
 namespace Auction_Website.BLL.Services
 {
@@ -15,12 +15,14 @@ namespace Auction_Website.BLL.Services
         private readonly ApplicationDbContext _context;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILoggerService _logger;
+        private readonly IHubContext<WalletHub> _walletHub;
 
-        public AuctionService(ApplicationDbContext context, ILoggerService logger, IUnitOfWork unitOfWork)
+        public AuctionService(ApplicationDbContext context, ILoggerService logger, IUnitOfWork unitOfWork, IMemoryCache cache, IHubContext<WalletHub> hubContext)
         {
             _unitOfWork = unitOfWork;
             _context = context;
             _logger = logger;
+            _walletHub = hubContext;
         }
 
         public async Task<IEnumerable<AuctionAddEditRequestModel>> GetActiveAuctionsAsync()
@@ -122,7 +124,7 @@ namespace Auction_Website.BLL.Services
                     return false;
                 }
 
-                if (winner.WalletBalance >= highestBid.Amount)
+                if (winner != null && seller != null && winner.WalletBalance >= highestBid.Amount)
                 {
                     _logger.LogInfo($"Transferring ${highestBid.Amount} from {winner.UserName} to {seller.UserName} for auction ID {auctionId}.");
 
@@ -140,8 +142,12 @@ namespace Auction_Website.BLL.Services
                     _context.Transfers.Add(transfer);
 
                     auction.IsClosed = true;
-
                     await _unitOfWork.SaveChangesAsync();
+
+                    await _walletHub.Clients.User(seller.Id).SendAsync("ReceiveWalletUpdate", seller.WalletBalance);
+                    await _walletHub.Clients.User(winner.Id).SendAsync("ReceiveWalletUpdate", winner.WalletBalance);
+                    await _walletHub.Clients.All.SendAsync("AuctionClosed", auction.AuctionId);
+
                     _logger.LogInfo($"Auction ID {auctionId} closed successfully.");
                     return true;
                 }
@@ -156,6 +162,9 @@ namespace Auction_Website.BLL.Services
                 _logger.LogInfo($"No bids found for auction ID {auctionId}. Closing auction.");
                 auction.IsClosed = true;
                 await _unitOfWork.SaveChangesAsync();
+
+                await _walletHub.Clients.All.SendAsync("AuctionClosed", auction.AuctionId);
+
                 return true;
             }
         }
