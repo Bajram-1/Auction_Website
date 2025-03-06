@@ -73,10 +73,16 @@ namespace Auction_Website.UI.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
+            if (!string.IsNullOrEmpty(returnUrl) && !Url.IsLocalUrl(returnUrl))
+            {
+                TempData["error"] = "Invalid URL entered. Redirecting to Register.";
+                return RedirectToPage("/Identity/Account/Register");
+            }
+
             ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -100,7 +106,6 @@ namespace Auction_Website.UI.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User registered successfully: {Email}", user.Email);
 
-                    // Ensure the user exists before generating the confirmation token
                     var createdUser = await _userManager.FindByEmailAsync(user.Email);
                     if (createdUser == null)
                     {
@@ -108,6 +113,9 @@ namespace Auction_Website.UI.Areas.Identity.Pages.Account
                         TempData["error"] = "An error occurred. Please try registering again.";
                         return Page();
                     }
+
+                    await _userManager.AddClaimAsync(createdUser, new System.Security.Claims.Claim("FirstName", Input.FirstName));
+                    await _userManager.AddClaimAsync(createdUser, new System.Security.Claims.Claim("LastName", Input.LastName));
 
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(createdUser);
                     token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
