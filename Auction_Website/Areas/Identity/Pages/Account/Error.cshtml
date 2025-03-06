@@ -1,0 +1,10 @@
+﻿@page
+@model ErrorModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="container text-center">
+    <h2 class="text-danger">Oops! Something went wrong. Click below to be redirected to the wanted page.</h2>
+    <a asp-page="/Identity/Account/Login">Go to Login</a>
+</div>

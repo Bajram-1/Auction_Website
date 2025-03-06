@@ -1,0 +1,94 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="login-container card shadow p-4">
+        <h2 class="text-center">Log in</h2>
+
+        <form method="post">
+            <div class="form-group mb-3">
+                <label asp-for="Input.Username" class="form-label"></label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+                    <input asp-for="Input.Username" class="form-control" placeholder="Enter your username" />
+                </div>
+                <span asp-validation-for="Input.Username" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3 position-relative">
+                <label asp-for="Input.Password" class="form-label"></label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-lock"></i>
+                    </span>
+                    <input asp-for="Input.Password" class="form-control pr-5" type="password" placeholder="Enter your password" id="password" />
+                </div>
+                <i class="fa-solid fa-eye-slash toggle-icon" onclick="togglePasswordVisibility('password', this)"></i>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fa-solid fa-right-to-bracket p-1"></i>  Log in
+            </button>
+        </form>
+
+        <div class="text-center mt-3">
+            <p>Don't have an account? <a asp-page="./Register">Register</a></p>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function togglePasswordVisibility(fieldId, icon) {
+            var field = document.getElementById(fieldId);
+            if (field.type === "password") {
+                field.type = "text";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                field.type = "password";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
+    </script>
+}
+
+@if (TempData["error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<style>
+    .position-relative {
+        position: relative;
+    }
+
+    input.pr-5 {
+        padding-right: 3rem;
+    }
+
+    .toggle-icon {
+        position: absolute;
+        top: 70%;
+        right: 15px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #6c757d;
+        z-index: 100;
+    }
+</style>

@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "Invalid URL";
+}
+
+<div class="container text-center mt-5">
+    <h2 class="text-danger">Oops! Invalid Page</h2>
+    <p>The page you tried to access does not exist or the URL is incorrect.</p>
+
+    <a href="@ViewBag.ReturnUrl" onclick="history.back()">
+        <i class="fa-solid fa-arrow-left"></i> Go Back
+    </a>
+</div>
