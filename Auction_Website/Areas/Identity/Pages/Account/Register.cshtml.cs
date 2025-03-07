@@ -13,6 +13,7 @@ using System.Threading;
 using Auction_Website.DAL.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auction_Website.UI.Areas.Identity.Pages.Account
 {
@@ -47,8 +48,14 @@ namespace Auction_Website.UI.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [StringLength(19, MinimumLength = 4, ErrorMessage = "Username must be between 4 and 19 characters.")]
+            [Display(Name = "Username")]
+            public string UserName { get; set; }
+
+            [Required]
             [EmailAddress]
             [Display(Name = "Email Address")]
+            [PersonalData]
             public string Email { get; set; }
 
             [Required]
@@ -92,9 +99,23 @@ namespace Auction_Website.UI.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                var existingUser = await _userManager.FindByNameAsync(Input.UserName);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Input.UserName", "This username is already taken.");
+                    return Page();
+                }
+
+                var existingUserByEmail = await _userManager.Users.Where(u => u.Email == Input.Email).FirstOrDefaultAsync();
+                if (existingUserByEmail != null)
+                {
+                    ModelState.AddModelError("Input.Email", "An account with this email already exists.");
+                    return Page();
+                }
+
                 var user = new ApplicationUser
                 {
-                    UserName = Input.Email,
+                    UserName = Input.UserName,
                     Email = Input.Email,
                     FirstName = Input.FirstName,
                     LastName = Input.LastName
