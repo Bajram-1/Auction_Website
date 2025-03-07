@@ -1,5 +1,6 @@
 ﻿using Auction_Website.BLL.DTO.ViewModels;
 using System.ComponentModel.DataAnnotations;
+using TimeZoneConverter;
 
 namespace Auction_Website.BLL.DTO.Requests
 {
@@ -25,7 +26,15 @@ namespace Auction_Website.BLL.DTO.Requests
         public string? SellerName { get; set; }
         public decimal CurrentHighestBid { get; set; }
         public bool? IsClosed { get; set; }
-        public TimeSpan TimeRemaining => EndTime - DateTime.UtcNow;
+        public TimeSpan TimeRemaining
+        {
+            get
+            {
+                var albaniaTimeZone = TZConvert.GetTimeZoneInfo("Central European Standard Time");
+                var localNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, albaniaTimeZone);
+                return EndTime - localNow;
+            }
+        }
     }
 
     public class FutureDateAttribute : ValidationAttribute
