@@ -38,7 +38,7 @@ namespace Auction_Website.BLL.Services
                     }
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(2), stoppingToken);
             }
         }
     }
