@@ -27,24 +27,36 @@ namespace Auction_Website.BLL.Services
 
         public async Task<IEnumerable<AuctionAddEditRequestModel>> GetActiveAuctionsAsync()
         {
-            var auctions = await _unitOfWork.AuctionRepository.GetActiveAuctionsAsync();
+            try
+            {
+                var auctions = await _unitOfWork.AuctionRepository.GetActiveAuctionsAsync();
 
-            return auctions
-                .Where(a => a.EndTime > DateTime.UtcNow && !a.IsClosed)
-                .OrderBy(a => a.EndTime)
-                .Select(a => new AuctionAddEditRequestModel
+                if (auctions == null || !auctions.Any())
                 {
-                    AuctionId = a.AuctionId,
-                    Title = a.Title,
-                    StartingPrice = a.StartingPrice,
-                    EndTime = a.EndTime,
-                    IsClosed = a.IsClosed,
-                    Description = a.Description,
-                    SellerName = a.CreatedByUser != null ? $"{a.CreatedByUser.FirstName} {a.CreatedByUser.LastName}" : "Unknown",
-                    CreatedByUserId = a.CreatedByUser?.Id ?? "Unknown",
-                    CurrentHighestBid = a.Bids.Any() ? a.Bids.Max(b => b.Amount) : a.StartingPrice
-                })
-                .ToList();
+                    return new List<AuctionAddEditRequestModel>();
+                }
+
+                return auctions
+                    .Where(a => a.EndTime > DateTime.UtcNow && !a.IsClosed)
+                    .OrderBy(a => a.EndTime)
+                    .Select(a => new AuctionAddEditRequestModel
+                    {
+                        AuctionId = a.AuctionId,
+                        Title = a.Title,
+                        StartingPrice = a.StartingPrice,
+                        EndTime = a.EndTime,
+                        IsClosed = a.IsClosed,
+                        Description = a.Description,
+                        SellerName = a.CreatedByUser != null ? $"{a.CreatedByUser.FirstName} {a.CreatedByUser.LastName}" : "Unknown",
+                        CreatedByUserId = a.CreatedByUser?.Id ?? "Unknown",
+                        CurrentHighestBid = a.Bids.Any() ? a.Bids.Max(b => b.Amount) : a.StartingPrice
+                    }).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                return new List<AuctionAddEditRequestModel>();
+            }
         }
 
         public async Task<DAL.Entities.Auction> GetAuctionByIdAsync(int auctionId)
@@ -73,6 +85,11 @@ namespace Auction_Website.BLL.Services
 
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
                 if (user == null)
+                {
+                    return false;
+                }
+
+                if (bidAmount > user.WalletBalance)
                 {
                     return false;
                 }
@@ -185,39 +202,55 @@ namespace Auction_Website.BLL.Services
 
         public async Task CloseExpiredAuctions()
         {
-            DateTime albaniaTimeNow = GetAlbaniaTime(DateTime.UtcNow);
-
-            var expiredAuctions = await _context.Auctions
-                .Where(a => a.EndTime <= albaniaTimeNow && !a.IsClosed)
-                .ToListAsync();
-
-            if (!expiredAuctions.Any())
+            try
             {
-                _logger.LogInfo("No expired auctions found.");
-                return;
+                DateTime albaniaTimeNow = GetAlbaniaTime(DateTime.UtcNow);
+
+                var expiredAuctions = await _context.Auctions
+                    .Where(a => a.EndTime <= albaniaTimeNow && !a.IsClosed)
+                    .ToListAsync();
+
+                if (!expiredAuctions.Any())
+                {
+                    _logger.LogInfo("No expired auctions found.");
+                    return;
+                }
+
+                _logger.LogInfo($"Found {expiredAuctions.Count} expired auctions.");
+
+                foreach (var auction in expiredAuctions)
+                {
+                    _logger.LogInfo($"Closing auction ID: {auction.AuctionId}, Title: {auction.Title}");
+                    await CloseAuctionAsync(auction.AuctionId);
+                }
+
+                _logger.LogInfo("Expired auctions processed.");
             }
-
-            _logger.LogInfo($"Found {expiredAuctions.Count} expired auctions.");
-
-            foreach (var auction in expiredAuctions)
+            catch (Exception ex)
             {
-                _logger.LogInfo($"Closing auction ID: {auction.AuctionId}, Title: {auction.Title}");
-                await CloseAuctionAsync(auction.AuctionId);
+                _logger.LogError(ex);
+                throw;
             }
-
-            _logger.LogInfo("Expired auctions processed.");
         }
 
         public async Task<bool> DeleteAuctionAsync(int auctionId, string userId)
         {
-            var auction = await _unitOfWork.AuctionRepository.GetAuctionByIdAsync(auctionId);
+            try
+            {
+                var auction = await _unitOfWork.AuctionRepository.GetAuctionByIdAsync(auctionId);
 
-            if (auction == null || auction.CreatedByUserId != userId)
+                if (auction == null || auction.CreatedByUserId != userId)
+                    return false;
+
+                _unitOfWork.AuctionRepository.Delete(auction);
+                await _unitOfWork.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
                 return false;
-
-            _unitOfWork.AuctionRepository.Delete(auction);
-            await _unitOfWork.SaveChangesAsync();
-            return true;
+            }
         }
     }
 }
