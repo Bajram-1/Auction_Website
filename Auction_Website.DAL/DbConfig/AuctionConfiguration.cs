@@ -29,6 +29,15 @@ namespace Auction_Website.DAL.DbConfig
             builder.Property(a => a.EndTime)
                 .IsRequired();
 
+            builder.Property(a => a.IsClosed)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            builder.HasOne(a => a.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(a => a.CreatedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasMany(a => a.Bids)
                 .WithOne(b => b.Auction)
                 .HasForeignKey(b => b.AuctionId)

@@ -210,7 +210,7 @@ namespace Auction_Website.UI.Controllers
         {
             try
             {
-                var success = await _auctionService.CloseAuction(id);
+                var success = await _auctionService.CloseAuctionAsync(id);
 
                 if (!success)
                 {

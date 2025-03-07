@@ -16,21 +16,19 @@ namespace Auction_Website.DAL.Repositories
         public async Task<IEnumerable<Auction>> GetActiveAuctionsAsync()
         {
             return await _context.Auctions
-                .Where(a => a.EndTime > System.DateTime.UtcNow && !a.IsClosed)
-                .OrderBy(a => a.EndTime)
+                .Include(a => a.CreatedByUser)
+                .Include(a => a.Bids)
+                .Where(a => a.EndTime > DateTime.UtcNow && !a.IsClosed)
                 .ToListAsync();
         }
 
         public async Task<Auction> GetAuctionByIdAsync(int auctionId)
         {
-            return await _context.Auctions.FirstOrDefaultAsync(a => a.AuctionId == auctionId);
-        }
-
-        public async Task<IEnumerable<Auction>> GetAuctionsByUserIdAsync(string userId)
-        {
             return await _context.Auctions
-                .Where(a => a.CreatedByUserId == userId)
-                .ToListAsync();
+                .Include(a => a.CreatedByUser)
+                .Include(a => a.Bids)
+                    .ThenInclude(b => b.User)
+                .FirstOrDefaultAsync(a => a.AuctionId == auctionId);
         }
     }
 }
