@@ -4,6 +4,7 @@ using Auction_Website.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auction_Website.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250304160221_AddedRemainingFieldsInAuctionEntity")]
+    partial class AddedRemainingFieldsInAuctionEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,7 +87,7 @@ namespace Auction_Website.DAL.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<decimal>("WalletBalance")
+                    b.Property<decimal>("Wallet")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
@@ -164,7 +167,7 @@ namespace Auction_Website.DAL.Migrations
                     b.Property<int>("AuctionId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("TimePlaced")
+                    b.Property<DateTime>("BidTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
@@ -370,13 +373,13 @@ namespace Auction_Website.DAL.Migrations
                     b.HasOne("Auction_Website.DAL.Entities.Auction", "Auction")
                         .WithMany("Bids")
                         .HasForeignKey("AuctionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Auction_Website.DAL.Entities.ApplicationUser", "User")
                         .WithMany("Bids")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Auction");
