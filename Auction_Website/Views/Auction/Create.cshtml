@@ -26,9 +26,9 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="EndTime" class="form-label">End Date</label>
-        <input asp-for="EndTime" class="form-control" type="datetime-local" />
-        <span asp-validation-for="EndTime" class="text-danger"></span>
+        <label asp-for="EndTime" class="form-label">End Time:</label>
+        <input asp-for="EndTime" class="form-control" type="datetime-local" id="EndTime" name="EndTime" required>
+        <small id="endTimeError" class="text-danger" style="display: none;"></small>
     </div>
 
     <button type="submit" class="btn btn-success"><i class="fa-solid fa-plus"></i> Create Auction</button>
@@ -38,7 +38,31 @@
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation/1.19.3/jquery.validate.min.js"></script>
-   @*  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script> *@
 }
 
 <a asp-action="Index" class="btn btn-secondary mt-3"><i class="fa-solid fa-arrow-left"></i> Back to Auctions</a>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let dateTimeInput = document.getElementById("EndTime");
+        let errorMessage = document.getElementById("endTimeError");
+
+        function validateDateTime() {
+            let selectedDateTime = new Date(dateTimeInput.value);
+            let now = new Date();
+
+            if (selectedDateTime <= now) {
+                errorMessage.textContent = "End date must be in the future.";
+                errorMessage.style.display = "block";
+                dateTimeInput.classList.add("is-invalid");
+            } else {
+                errorMessage.style.display = "none";
+                dateTimeInput.classList.remove("is-invalid");
+            }
+        }
+
+        dateTimeInput.setAttribute("min", new Date().toISOString().slice(0, 16));
+
+        dateTimeInput.addEventListener("input", validateDateTime);
+    });
+</script>
