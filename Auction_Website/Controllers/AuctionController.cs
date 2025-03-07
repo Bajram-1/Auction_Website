@@ -181,7 +181,7 @@ namespace Auction_Website.UI.Controllers
                 if (user == null)
                 {
                     TempData["error"] = "User not found.";
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Details", new { id = auctionId });
                 }
 
                 bool isBidSuccessful = await _auctionService.PlaceBidAsync(auctionId, user.Id, bidAmount);
@@ -189,19 +189,19 @@ namespace Auction_Website.UI.Controllers
                 if (!isBidSuccessful)
                 {
                     TempData["error"] = "Bid failed. Ensure the bid is higher than the current highest bid and within your wallet balance.";
+                    return RedirectToAction("Details", new { id = auctionId });
                 }
                 else
                 {
                     TempData["success"] = "Bid placed successfully!";
+                    return RedirectToAction("Index");
                 }
-
-                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 _loggerService.LogError(ex);
                 TempData["error"] = "An error occurred while placing your bid. Please try again later.";
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", new { id = auctionId });
             }
         }
 
