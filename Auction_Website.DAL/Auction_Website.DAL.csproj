@@ -22,4 +22,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Auction.Common\Auction_Website.Common.csproj" />
+  </ItemGroup>
+
 </Project>
