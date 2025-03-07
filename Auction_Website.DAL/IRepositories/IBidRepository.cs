@@ -9,7 +9,6 @@ namespace Auction_Website.DAL.IRepositories
 {
     public interface IBidRepository : IRepository<Bid>
     {
-        Task<IEnumerable<Bid>> GetBidsByAuctionIdAsync(int auctionId);
         Task<Bid> GetHighestBidAsync(int auctionId);
     }
 }
