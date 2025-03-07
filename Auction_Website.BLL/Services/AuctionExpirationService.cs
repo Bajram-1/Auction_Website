@@ -19,22 +19,29 @@ namespace Auction_Website.BLL.Services
 
         public async Task CheckAndExpireAuctionsAsync()
         {
-            using var scope = _scopeFactory.CreateScope();
-            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-
-            var activeAuctions = await unitOfWork.AuctionRepository.GetActiveAuctionsAsync();
-            var expiredAuctions = activeAuctions.Where(a => a.EndTime <= DateTime.UtcNow).ToList();
-
-            foreach (var auction in expiredAuctions)
+            try
             {
-                auction.IsClosed = true;
-                unitOfWork.AuctionRepository.Update(auction);
+                using var scope = _scopeFactory.CreateScope();
+                var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+                var activeAuctions = await unitOfWork.AuctionRepository.GetActiveAuctionsAsync();
+                var expiredAuctions = activeAuctions.Where(a => a.EndTime <= DateTime.UtcNow).ToList();
+
+                foreach (var auction in expiredAuctions)
+                {
+                    auction.IsClosed = true;
+                    unitOfWork.AuctionRepository.Update(auction);
+                }
+
+                if (expiredAuctions.Any())
+                {
+                    await unitOfWork.SaveChangesAsync();
+                    _logger.LogInformation($"{expiredAuctions.Count} auctions expired.");
+                }
             }
-
-            if (expiredAuctions.Any())
+            catch (Exception ex)
             {
-                await unitOfWork.SaveChangesAsync();
-                _logger.LogInformation($"{expiredAuctions.Count} auctions expired.");
+                _logger.LogError(ex, "Error in CheckAndExpireAuctionsAsync");
             }
         }
 
@@ -42,7 +49,14 @@ namespace Auction_Website.BLL.Services
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await CheckAndExpireAuctionsAsync();
+                try
+                {
+                    await CheckAndExpireAuctionsAsync();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error occurred while checking and expiring auctions.");
+                }
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
             }
         }

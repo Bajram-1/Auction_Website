@@ -10,8 +10,8 @@ namespace Auction_Website.BLL.IServices
         Task<IEnumerable<AuctionAddEditRequestModel>> GetActiveAuctionsAsync();
         Task<DAL.Entities.Auction> GetAuctionByIdAsync(int auctionId);
         Task CreateAuctionAsync(DAL.Entities.Auction auction);
-        Task<bool> PlaceBidAsync(int auctionId, string userId, decimal amount);
-        Task<bool> CloseAuction(int auctionId);
+        Task<bool> PlaceBidAsync(int auctionId, string userId, decimal bidAmount);
+        Task<bool> CloseAuctionAsync(int auctionId);
         Task CloseExpiredAuctions();
         Task<bool> DeleteAuctionAsync(int auctionId, string userId);
     }
