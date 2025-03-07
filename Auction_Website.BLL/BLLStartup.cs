@@ -13,7 +13,6 @@ namespace Auction_Website.BLL
 
             services.AddScoped<IAuctionService, AuctionService>();
             services.AddHostedService<AuctionExpirationService>();
-            services.AddScoped<IBidService, BidService>();
         }
     }
 }
