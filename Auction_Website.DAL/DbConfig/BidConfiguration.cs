@@ -16,18 +16,18 @@ namespace Auction_Website.DAL.DbConfig
                 .IsRequired()
                 .HasPrecision(18, 2);
 
-            builder.Property(b => b.BidTime)
+            builder.Property(b => b.TimePlaced)
                 .IsRequired();
 
             builder.HasOne(b => b.User)
                 .WithMany(u => u.Bids)
                 .HasForeignKey(b => b.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(b => b.Auction)
                 .WithMany(a => a.Bids)
                 .HasForeignKey(b => b.AuctionId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

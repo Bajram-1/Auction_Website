@@ -18,7 +18,7 @@ namespace Auction_Website.DAL.DbConfig
                 .IsRequired()
                 .HasMaxLength(50);
 
-            builder.Property(u => u.Wallet)
+            builder.Property(u => u.WalletBalance)
                 .IsRequired()
                 .HasPrecision(18, 2);
 

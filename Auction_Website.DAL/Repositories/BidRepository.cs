@@ -18,14 +18,6 @@ namespace Auction_Website.DAL.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Bid>> GetBidsByAuctionIdAsync(int auctionId)
-        {
-            return await _context.Bids
-                .Where(b => b.AuctionId == auctionId)
-                .OrderByDescending(b => b.BidTime)
-                .ToListAsync();
-        }
-
         public async Task<Bid> GetHighestBidAsync(int auctionId)
         {
             return await _context.Bids

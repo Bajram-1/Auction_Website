@@ -6,7 +6,7 @@ namespace Auction_Website.DAL.Entities
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public decimal Wallet { get; set; } = 1000.00m;
+        public decimal WalletBalance { get; set; } = 1000.00m;
         public virtual ICollection<Auction> AuctionsCreated { get; set; } = new List<Auction>();
         public virtual ICollection<Bid> Bids { get; set; } = new List<Bid>();
         public virtual ICollection<Transfer> TransfersSent { get; set; } = new List<Transfer>();

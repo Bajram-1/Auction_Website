@@ -15,10 +15,8 @@ namespace Auction_Website.DAL
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuctionRepository, AuctionRepository>();
             services.AddScoped<IBidRepository, BidRepository>();
-            services.AddScoped<ITransferRepository, TransferRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }

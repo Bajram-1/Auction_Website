@@ -6,7 +6,7 @@
         public string UserId { get; set; }
         public int AuctionId { get; set; }
         public decimal Amount { get; set; }
-        public DateTime BidTime { get; set; } = DateTime.UtcNow;
+        public DateTime TimePlaced { get; set; } = DateTime.UtcNow;
         public virtual ApplicationUser User { get; set; }
         public virtual Auction Auction { get; set; }
     }

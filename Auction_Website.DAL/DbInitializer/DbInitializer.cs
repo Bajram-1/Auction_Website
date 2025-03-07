@@ -51,8 +51,10 @@ namespace Auction_Website.DAL.DbInitializer
                     {
                         UserName = "admin@gmail.com",
                         Email = "admin@gmail.com",
+                        FirstName = "Bani",
+                        LastName = "Shehi",
                         PhoneNumber = "0695668776",
-                        Wallet = 1000.00m,
+                        WalletBalance = 1000.00m,
                     };
 
                     var result = await _userManager.CreateAsync(adminUser, "Albania128.");
