@@ -64,9 +64,11 @@
                         <input type="hidden" name="auctionId" value="@Model.AuctionId" />
                         <div class="mb-3">
                             <label for="bidAmount" class="form-label">Your Bid</label>
-                            <input type="number" name="bidAmount" class="form-control" min="@Model.CurrentHighestBid" step="0.01" required />
+                            <input type="number" name="bidAmount" class="form-control" min="@(Convert.ToDecimal(Model.CurrentHighestBid) + 0.01M)" step="0.01" required />
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Bid</button>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fa-solid fa-gavel p-1"></i>Bid
+                        </button>
                     </form>
                 }
                 else if (Model.IsClosed == false)
@@ -85,7 +87,11 @@
     </div>
 </div>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 <script>
     var auctionEndTime = new Date("@Model.EndTime.ToString("o")");
 
