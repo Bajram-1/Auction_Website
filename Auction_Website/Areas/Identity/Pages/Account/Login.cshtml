@@ -9,7 +9,7 @@
     <div class="login-container card shadow p-4">
         <h2 class="text-center">Log in</h2>
 
-        <form method="post">
+        <form method="post" id="loginForm">
             <div class="form-group mb-3">
                 <label asp-for="Input.Username" class="form-label"></label>
                 <div class="input-group">
@@ -44,12 +44,32 @@
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
     <script>
+            $(document).ready(function () {
+                $("input").on("blur", function () {
+                    $(this).valid();
+                });
+
+                $("input").on("input", function () {
+                    $(this).next(".text-danger").fadeOut();
+                });
+
+                $("#loginForm").submit(function (e) {
+                    if (!$(this).valid()) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
         function togglePasswordVisibility(fieldId, icon) {
             var field = document.getElementById(fieldId);
             if (field.type === "password") {
@@ -63,14 +83,6 @@
             }
         }
     </script>
-}
-
-@if (TempData["error"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @TempData["error"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
 }
 
 <style>

@@ -37,6 +37,8 @@ namespace Auction_Website.UI.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [StringLength(19, MinimumLength = 4, ErrorMessage = "Username must be between 4 and 19 characters.")]
+            [Display(Name = "Username")]
             public string Username { get; set; }
 
             [Required]
@@ -68,27 +70,43 @@ namespace Auction_Website.UI.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                ApplicationUser user = await _userManager.FindByNameAsync(Input.Username);
 
-                if (result.IsNotAllowed)
+                if (user == null && Input.Username.Contains("@"))
                 {
-                    TempData["error"] = "You have not verified your email account. Please verify it!";
+                    user = await _userManager.FindByEmailAsync(Input.Username);
                 }
-                else if (result.Succeeded)
+
+                if (user != null)
                 {
-                    _logger.LogInfo("User logged in.");
-                    TempData["success"] = "Login successful! Welcome back.";
-                    return LocalRedirect(returnUrl);
-                }
-                else if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe });
-                }
-                else if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    TempData["error"] = "Your account has been locked out due to multiple failed login attempts.";
-                    return RedirectToPage("./Lockout");
+                    var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
+                    if (result.IsNotAllowed)
+                    {
+                        TempData["error"] = "You have not verified your email account. Please verify it!";
+                    }
+                    else if (result.Succeeded)
+                    {
+                        _logger.LogInfo("User logged in.");
+                        TempData["success"] = "Login successful! Welcome back.";
+                        return LocalRedirect(returnUrl);
+                    }
+                    else if (result.RequiresTwoFactor)
+                    {
+                        return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe });
+                    }
+                    else if (result.IsLockedOut)
+                    {
+                        _logger.LogWarning("User account locked out.");
+                        TempData["error"] = "Your account has been locked out due to multiple failed login attempts.";
+                        return RedirectToPage("./Lockout");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        TempData["error"] = "Invalid email or password.";
+                        return Page();
+                    }
                 }
                 else
                 {
@@ -100,6 +118,5 @@ namespace Auction_Website.UI.Areas.Identity.Pages.Account
 
             return Page();
         }
-
     }
 }
