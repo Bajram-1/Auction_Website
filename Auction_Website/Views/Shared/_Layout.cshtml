@@ -110,20 +110,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
-    <script>
-        $(document).ready(function () {
-            var successMessage = '@TempData["success"]';
-            var errorMessage = '@TempData["error"]';
-
-            if (successMessage && successMessage !== "") {
-                toastr.success(successMessage);
-            }
-            if (errorMessage && errorMessage !== "") {
-                toastr.error(errorMessage);
-            }
-        });
-    </script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
