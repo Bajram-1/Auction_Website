@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Invalid URL";
+}
+
+<div class="container text-center mt-5">
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <h2 class="text-danger">Not Authorized to Access This Page</h2>
+        <p>Please log in first to access this page. Click the login button below to proceed.</p>
+    }
+    else
+    {
+        <h2 class="text-danger">Invalid URL</h2>
+        <p>The page you are looking for does not exist or you do not have permission to access it.</p>
+        <button onclick="history.back()" class="btn btn-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Go Back
+        </button>
+    }
+</div>
