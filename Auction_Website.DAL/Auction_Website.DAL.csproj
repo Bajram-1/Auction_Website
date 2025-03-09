@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Auction.Common\Auction_Website.Common.csproj" />
+    <ProjectReference Include="..\Auction_Website.Common\Auction_Website.Common.csproj" />
   </ItemGroup>
 
 </Project>
