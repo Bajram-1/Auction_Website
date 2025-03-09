@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auction_Website.UI", "Auction_Website.UI\Auction_Website.UI.csproj", "{7A3BB8E3-D68C-41CF-8CC6-671023A81287}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auction_Website.DAL", "Auction_Website.DAL\Auction_Website.DAL.csproj", "{86500BF2-78F6-4587-A92E-4B3907192416}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auction_Website.BLL", "Auction_Website.BLL\Auction_Website.BLL.csproj", "{C7992023-DE07-4045-8AF7-6D14D684F36D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auction_Website.Common", "Auction_Website.Common\Auction_Website.Common.csproj", "{1B68F880-088B-47FA-97D3-4946DE20C27B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auction_Website.UI", "Auction_Website.UI\Auction_Website.UI.csproj", "{7A3BB8E3-D68C-41CF-8CC6-671023A81287}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
