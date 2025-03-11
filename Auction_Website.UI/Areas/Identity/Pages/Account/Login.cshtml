@@ -10,6 +10,7 @@
         <h2 class="text-center">Log in</h2>
 
         <form method="post" id="loginForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group mb-3">
                 <label asp-for="Input.Username" class="form-label"></label>
                 <div class="input-group">
@@ -31,10 +32,11 @@
                 </div>
                 <i class="fa-solid fa-eye-slash toggle-icon" onclick="togglePasswordVisibility('password', this)"></i>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
+                <span id="passwordValidationMessage" class="text-danger"></span>
             </div>
 
             <button type="submit" class="btn btn-primary w-100">
-                <i class="fa-solid fa-right-to-bracket p-1"></i>  Log in
+                <i class="fa-solid fa-right-to-bracket p-1"></i> Log in
             </button>
         </form>
 
@@ -58,21 +60,58 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-            $(document).ready(function () {
-                $("input").on("blur", function () {
-                    $(this).valid();
-                });
+        $(document).ready(function () {
+            $("#loginForm").submit(function (e) {
+                let password = $("#password").val().trim();
 
-                $("input").on("input", function () {
-                    $(this).next(".text-danger").fadeOut();
-                });
+                if (password === "") {
+                    $("#passwordValidationMessage").hide();
+                    return;
+                }
 
-                $("#loginForm").submit(function (e) {
-                    if (!$(this).valid()) {
-                        e.preventDefault();
-                    }
-                });
+                validatePassword(password);
             });
+
+            $("#password").on("input", function () {
+                let password = $(this).val().trim();
+
+                if (password === "") {
+                    $("#passwordValidationMessage").hide();
+                    return;
+                }
+
+                validatePassword(password);
+            });
+
+            function validatePassword(password) {
+                let messages = [];
+
+                if (password.length < 8) {
+                    messages.push("Password must be at least 8 characters long.");
+                }
+
+                if (password.length >= 8) {
+                    if (!/[A-Z]/.test(password)) {
+                        messages.push("Must contain at least one uppercase letter.");
+                    }
+                    if (!/[a-z]/.test(password)) {
+                        messages.push("Must contain at least one lowercase letter.");
+                    }
+                    if (!/[0-9]/.test(password)) {
+                        messages.push("Must contain at least one digit.");
+                    }
+                    if (!/[^A-Za-z0-9]/.test(password)) {
+                        messages.push("Must contain at least one special character.");
+                    }
+                }
+
+                if (messages.length > 0) {
+                    $("#passwordValidationMessage").html(messages.join("<br>")).show();
+                } else {
+                    $("#passwordValidationMessage").fadeOut(500);
+                }
+            }
+        });
 
         function togglePasswordVisibility(fieldId, icon) {
             var field = document.getElementById(fieldId);

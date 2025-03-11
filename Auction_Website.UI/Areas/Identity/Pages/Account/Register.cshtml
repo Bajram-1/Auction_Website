@@ -10,6 +10,7 @@
         <h2 class="text-center">Register</h2>
 
         <form method="post" id="registerForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group mb-3">
                 <label asp-for="Input.UserName" class="form-label">Username</label>
                 <input asp-for="Input.UserName" class="form-control" placeholder="Choose a username" />
@@ -78,64 +79,65 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-<script>
-    $(document).ready(function () {
-        $("#registerForm").validate({
-            errorPlacement: function (error, element) {
-                if (element.attr("type") === "email") {
-                    $(".text-danger:contains('The Email Address field is not a valid e-mail address.')").remove();
-                }
-                error.insertAfter(element);
-            }
-        });
-
-        $("input").on("blur", function () {
-            $(this).valid();
-        });
-
-        $("input").on("input", function () {
-            $(this).next(".text-danger").fadeOut();
-        });
-
-        $("#registerForm").submit(function (e) {
-            if (!$(this).valid()) {
-                e.preventDefault();
-            }
-        });
-    });
-
-    function togglePasswordVisibility(fieldId, icon) {
-        var field = document.getElementById(fieldId);
-        if (field.type === "password") {
-            field.type = "text";
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        } else {
-            field.type = "password";
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        }
-    }
-</script>
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <style>
-        .position-relative {
-            position: relative;
+    <script>
+        $(document).ready(function () {
+            $("#registerForm").validate();
+
+            $("input").on("blur", function () {
+                $(this).valid();
+            });
+
+            $("input").on("input", function () {
+                let inputField = $(this);
+                let errorSpan = inputField.next(".text-danger");
+
+                if (inputField.val().length >= 4 && inputField.val().length <= 19) {
+                    errorSpan.fadeOut();
+                } else {
+                    errorSpan.fadeIn();
+                }
+            });
+
+            $("#registerForm").submit(function (e) {
+                if (!$(this).valid()) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        function togglePasswordVisibility(fieldId, icon) {
+            var field = document.getElementById(fieldId);
+            if (field.type === "password") {
+                field.type = "text";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                field.type = "password";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
         }
-        input.pr-5 {
-            padding-right: 3rem;
-        }
-        .toggle-icon {
-            position: absolute;
-            top: 70%;
-            right: 15px;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #6c757d;
-            z-index: 100;
-        }
-    </style>
+    </script>
+
 }
+
+<style>
+    .position-relative {
+        position: relative;
+    }
+    input.pr-5 {
+        padding-right: 3rem;
+    }
+    .toggle-icon {
+        position: absolute;
+        top: 70%;
+        right: 15px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #6c757d;
+        z-index: 100;
+    }
+</style>
