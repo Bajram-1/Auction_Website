@@ -16,7 +16,6 @@ namespace Auction_Website.DAL
             });
 
             services.AddScoped<IAuctionRepository, AuctionRepository>();
-            services.AddScoped<IBidRepository, BidRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }

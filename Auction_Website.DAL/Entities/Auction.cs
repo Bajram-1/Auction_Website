@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Auction_Website.DAL.Entities
+﻿namespace Auction_Website.DAL.Entities
 {
     public class Auction
     {

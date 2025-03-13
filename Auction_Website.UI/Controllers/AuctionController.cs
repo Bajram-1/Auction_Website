@@ -1,8 +1,6 @@
 ﻿using Auction_Website.BLL.DTO.Requests;
 using Auction_Website.BLL.DTO.ViewModels;
 using Auction_Website.BLL.IServices;
-using Auction_Website.BLL.Services;
-using Auction_Website.DAL;
 using Auction_Website.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

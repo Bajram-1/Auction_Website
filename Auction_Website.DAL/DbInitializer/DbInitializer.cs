@@ -1,11 +1,6 @@
 ﻿using Auction_Website.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Auction_Website.DAL.DbInitializer
 {
@@ -38,38 +33,6 @@ namespace Auction_Website.DAL.DbInitializer
             {
                 Console.WriteLine($"Migration failed: {ex.Message}");
                 throw;
-            }
-
-            if (!await _roleManager.RoleExistsAsync("Admin"))
-            {
-                await _roleManager.CreateAsync(new IdentityRole("Admin"));
-                await _roleManager.CreateAsync(new IdentityRole("Customer"));
-
-                if (await _userManager.FindByEmailAsync("admin@gmail.com") == null)
-                {
-                    var adminUser = new ApplicationUser
-                    {
-                        UserName = "admin@gmail.com",
-                        Email = "admin@gmail.com",
-                        FirstName = "Bani",
-                        LastName = "Shehi",
-                        PhoneNumber = "0695668776",
-                        WalletBalance = 1000.00m,
-                    };
-
-                    var result = await _userManager.CreateAsync(adminUser, "Albania128.");
-                    if (result.Succeeded)
-                    {
-                        await _userManager.AddToRoleAsync(adminUser, "Admin");
-                    }
-                    else
-                    {
-                        foreach (var error in result.Errors)
-                        {
-                            Console.WriteLine($"Error creating admin user: {error.Description}");
-                        }
-                    }
-                }
             }
         }
     }

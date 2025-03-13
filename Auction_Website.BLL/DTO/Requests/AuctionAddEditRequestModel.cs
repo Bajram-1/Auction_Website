@@ -1,5 +1,4 @@
-﻿using Auction_Website.BLL.DTO.ViewModels;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using TimeZoneConverter;
 
 namespace Auction_Website.BLL.DTO.Requests
