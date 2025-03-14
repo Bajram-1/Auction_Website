@@ -79,6 +79,12 @@ namespace Auction_Website.UI.Areas.Identity.Pages.Account
 
                 if (user != null)
                 {
+                    if (!user.IsActive)
+                    {
+                        ModelState.AddModelError("", "Your account has been deactivated. Please contact support.");
+                        return Page();
+                    }
+
                     var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
                     if (result.IsNotAllowed)

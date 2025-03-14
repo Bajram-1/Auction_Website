@@ -1,0 +1,103 @@
+﻿@model IEnumerable<Auction_Website.DAL.Entities.ApplicationUser>
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<h2>Manage Users</h2>
+
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success">@TempData["success"]</div>
+}
+
+@if (TempData["error"] != null)
+{
+    <div class="alert alert-danger">@TempData["error"]</div>
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Wallet Balance</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>
+                    @(user.Email == "admin@auction.com" ? "Admin" : "User")
+                </td>
+                <td>$@user.WalletBalance</td>
+                <td>
+                    <span class="badge @(user.IsActive ? "bg-success" : "bg-danger")">
+                        @(user.IsActive ? "Active" : "Inactive")
+                    </span>
+                </td>
+                <td>
+                    @if (user.Email != "admin@auction.com")
+                    {
+                        <button type="button" class="btn @(user.IsActive ? "btn-danger" : "btn-success")"
+                                data-bs-toggle="modal"
+                                data-bs-target="#confirmModal"
+                                data-userid="@user.Id"
+                                data-username="@user.UserName"
+                                data-status="@(user.IsActive ? "deactivate" : "activate")">
+                            @(user.IsActive ? "Deactivate" : "Activate")
+                        </button>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Admin (Cannot Deactivate)</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to <span id="modalActionText"></span> <strong id="modalUsername"></strong>?
+            </div>
+            <div class="modal-footer">
+                <form id="confirmForm" method="post" asp-controller="Admin" asp-action="ToggleUserStatus">
+                    <input type="hidden" name="userId" id="modalUserId" />
+                    <button type="submit" class="btn btn-danger">Yes, Proceed</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var confirmModal = document.getElementById("confirmModal");
+            confirmModal.addEventListener("show.bs.modal", function (event) {
+                var button = event.relatedTarget;
+                var userId = button.getAttribute("data-userid");
+                var username = button.getAttribute("data-username");
+                var action = button.getAttribute("data-status");
+
+                document.getElementById("modalUserId").value = userId;
+                document.getElementById("modalUsername").innerText = username;
+                document.getElementById("modalActionText").innerText = action;
+            });
+        });
+    </script>
+}

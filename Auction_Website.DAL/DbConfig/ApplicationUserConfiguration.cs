@@ -22,6 +22,10 @@ namespace Auction_Website.DAL.DbConfig
                 .IsRequired()
                 .HasPrecision(18, 2);
 
+            builder.Property(u => u.IsActive)
+                   .IsRequired()
+                   .HasDefaultValue(true);
+
             builder.HasMany(u => u.AuctionsCreated)
                 .WithOne(a => a.CreatedByUser)
                 .HasForeignKey(a => a.CreatedByUserId);
