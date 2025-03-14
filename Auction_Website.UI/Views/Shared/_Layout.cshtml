@@ -61,7 +61,7 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Auction" asp-action="Index">Bid's List</a>
+                                <a class="nav-link" asp-controller="Auction" asp-action="Index">Auction List</a>
                             </li>
                         }
                         @if (User.IsInRole(StaticDetails.Role_Admin))

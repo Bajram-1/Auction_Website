@@ -3,6 +3,7 @@ using Auction_Website.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using X.PagedList.Extensions;
 
 namespace Auction_Website.UI.Controllers
 {
@@ -16,9 +17,12 @@ namespace Auction_Website.UI.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> UserList()
+        public async Task<IActionResult> UserList(int? page)
         {
-            var users = _userManager.Users.ToList();
+            int pageSize = 10;
+            int pageNumber = page ?? 1;
+
+            var users = _userManager.Users.OrderBy(u => u.UserName).ToPagedList(pageNumber, pageSize);
             return View(users);
         }
 

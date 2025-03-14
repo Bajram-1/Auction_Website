@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Auction_Website.DAL.Entities.ApplicationUser>
+﻿@model X.PagedList.IPagedList<Auction_Website.DAL.Entities.ApplicationUser>
+@using X.PagedList.Mvc.Core
 @{
     ViewData["Title"] = "Manage Users";
 }
@@ -50,6 +51,7 @@
                                 data-userid="@user.Id"
                                 data-username="@user.UserName"
                                 data-status="@(user.IsActive ? "deactivate" : "activate")">
+                            <i class="fa-solid @(user.IsActive ? "fa-user-slash" : "fa-user-check")"></i>
                             @(user.IsActive ? "Deactivate" : "Activate")
                         </button>
                     }
@@ -62,6 +64,15 @@
         }
     </tbody>
 </table>
+
+<div class="d-flex justify-content-center">
+    @Html.PagedListPager(Model, page => Url.Action("UserList", new { page }),
+            new PagedListRenderOptions
+    {
+        LiElementClasses = new[] { "page-item" },
+        PageClasses = new[] { "page-link" }
+    })
+</div>
 
 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
     <div class="modal-dialog">
