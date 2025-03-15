@@ -43,7 +43,7 @@ namespace Auction_Website.DAL.DbInitializer
                 {
                     var adminUser = new ApplicationUser
                     {
-                        UserName = "Admin User",
+                        UserName = "Admin",
                         Email = "admin@auction.com",
                         FirstName = "Admin",
                         LastName = "User",
