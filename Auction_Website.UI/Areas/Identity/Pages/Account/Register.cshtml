@@ -19,7 +19,7 @@
 
             <div class="form-group mb-3">
                 <label asp-for="Input.Email" class="form-label">Email Address</label>
-                <input asp-for="Input.Email" class="form-control" placeholder="Enter your email" />
+                <input asp-for="Input.Email" class="form-control" type="email" placeholder="Enter your email" />
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
 
@@ -93,12 +93,6 @@
             $("input").on("input", function () {
                 let inputField = $(this);
                 let errorSpan = inputField.next(".text-danger");
-
-                if (inputField.val().length >= 4 && inputField.val().length <= 19) {
-                    errorSpan.fadeOut();
-                } else {
-                    errorSpan.fadeIn();
-                }
             });
 
             $("#registerForm").submit(function (e) {
