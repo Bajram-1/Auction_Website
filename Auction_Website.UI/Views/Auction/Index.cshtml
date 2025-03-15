@@ -51,7 +51,7 @@
                                     }
                                     else if (ts.TotalMinutes >= 1)
                                     {
-                                        int minutes = (int)ts.TotalMinutes;
+                                        int minutes = (int)Math.Ceiling(ts.TotalMinutes);
                                         @($"{minutes} {(minutes == 1 ? "minute" : "minutes")}")
                                     }
                                     else
@@ -151,17 +151,21 @@
                     });
                 } else {
                     var seconds = Math.floor((diff / 1000) % 60);
-                    var minutes = Math.floor((diff / (1000 * 60)) % 60);
+                    var minutes = Math.floor(diff / (1000 * 60));
                     var hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
                     var days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
                     if (days > 0) {
                         countdownText = days + " " + (days === 1 ? "day" : "days");
-                    } else if (hours > 0) {
+                    }
+                    else if (hours > 0) {
                         countdownText = hours + " " + (hours === 1 ? "hour" : "hours");
-                    } else if (minutes > 0) {
+                    }
+                    else if (minutes >= 1) {
+                         minutes += 1;
                         countdownText = minutes + " " + (minutes === 1 ? "minute" : "minutes");
-                    } else {
+                    }
+                    else {
                         countdownText = seconds + " " + (seconds === 1 ? "second" : "seconds");
                     }
                 }
