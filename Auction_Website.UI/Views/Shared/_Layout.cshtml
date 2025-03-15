@@ -2,6 +2,12 @@
 @{
     var firstName = User.FindFirst("FirstName")?.Value ?? "";
     var lastName = User.FindFirst("LastName")?.Value ?? "";
+
+    var username = User.Identity.Name;
+
+    var displayName = !string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName)
+        ? $"{firstName} {lastName}"
+        : username;
 }
 
 <!DOCTYPE html>
@@ -76,7 +82,7 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <span class="navbar-text me-3">Hello @firstName @lastName</span>
+                                <span class="navbar-text me-3">Hello @displayName</span>
                             </li>
                             <li class="nav-item">
                                 <form method="post" asp-area="Identity" asp-page="/Account/Logout">
