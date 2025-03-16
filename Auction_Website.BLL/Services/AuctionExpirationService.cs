@@ -9,9 +9,9 @@ namespace Auction_Website.BLL.Services
     public class AuctionExpirationService : BackgroundService, IAuctionExpirationService
     {
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly ILogger<AuctionExpirationService> _logger;
+        private readonly ILoggerService _logger;
 
-        public AuctionExpirationService(IServiceScopeFactory scopeFactory, ILogger<AuctionExpirationService> logger)
+        public AuctionExpirationService(IServiceScopeFactory scopeFactory, ILoggerService logger)
         {
             _scopeFactory = scopeFactory;
             _logger = logger;
@@ -36,12 +36,12 @@ namespace Auction_Website.BLL.Services
                 if (expiredAuctions.Any())
                 {
                     await unitOfWork.SaveChangesAsync();
-                    _logger.LogInformation($"{expiredAuctions.Count} auctions expired.");
+                    _logger.LogInfo($"{expiredAuctions.Count} auctions expired.");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in CheckAndExpireAuctionsAsync");
+                _logger.LogError(ex);
             }
         }
 
@@ -55,7 +55,7 @@ namespace Auction_Website.BLL.Services
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred while checking and expiring auctions.");
+                    _logger.LogError(ex);
                 }
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
             }

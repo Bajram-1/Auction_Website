@@ -8,9 +8,9 @@ namespace Auction_Website.BLL.Services
     public class AuctionClosingService : BackgroundService
     {
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly ILogger<AuctionClosingService> _logger;
+        private readonly ILoggerService _logger;
 
-        public AuctionClosingService(IServiceScopeFactory scopeFactory, ILogger<AuctionClosingService> logger)
+        public AuctionClosingService(IServiceScopeFactory scopeFactory, ILoggerService logger)
         {
             _scopeFactory = scopeFactory;
             _logger = logger;
@@ -18,7 +18,7 @@ namespace Auction_Website.BLL.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("AuctionClosingService started...");
+            _logger.LogInfo("AuctionClosingService started...");
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -28,9 +28,9 @@ namespace Auction_Website.BLL.Services
 
                     try
                     {
-                        _logger.LogInformation("Checking for expired auctions...");
+                        _logger.LogInfo("Checking for expired auctions...");
                         await auctionService.CloseExpiredAuctions();
-                        _logger.LogInformation("Expired auctions processed.");
+                        _logger.LogInfo("Expired auctions processed.");
                     }
                     catch (Exception ex)
                     {

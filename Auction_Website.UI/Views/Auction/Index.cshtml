@@ -136,43 +136,56 @@
         document.getElementById("walletBalance").innerText = "$" + newBalance.toFixed(2);
     });
 
-    setInterval(function () {
-        $(".time-remaining").each(function () {
-            var endTimeStr = $(this).data("endtime");
-            if (endTimeStr) {
-                var endTime = new Date(endTimeStr);
-                var now = new Date();
-                var diff = endTime - now;
-                var countdownText = "";
-                if (diff <= 0) {
-                    countdownText = "Auction ended";
-                    $(this).closest("tr").fadeOut(500, function(){
-                        $(this).remove();
-                    });
-                } else {
-                    var seconds = Math.floor((diff / 1000) % 60);
-                    var minutes = Math.floor(diff / (1000 * 60));
-                    var hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                    var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        function updateCountdown() {
+            $(".time-remaining").each(function () {
+                var endTimeStr = $(this).data("endtime");
+                if (endTimeStr) {
+                    var endTime = new Date(endTimeStr);
+                    var now = new Date();
+                    var diff = endTime - now;
+                    var countdownText = "";
 
-                    if (days > 0) {
-                        countdownText = days + " " + (days === 1 ? "day" : "days");
+                    if (diff <= 0) {
+                        countdownText = "Auction ended";
+                        $(this).closest("tr").fadeOut(500, function () {
+                            $(this).remove();
+                        });
+                    } else {
+                        var seconds = Math.floor((diff / 1000) % 60);
+                        var minutes = Math.floor((diff / (1000 * 60)) % 60);
+                        var hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                        var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+                        if (days > 0) {
+                            countdownText = days + " " + (days === 1 ? "day" : "days");
+                            if (hours > 0) {
+                                countdownText += " " + hours + " " + (hours === 1 ? "hour" : "hours");
+                            }
+                        } else if (hours > 0) {
+                            countdownText = hours + " " + (hours === 1 ? "hour" : "hours");
+                            if (minutes > 0) {
+                                countdownText += " " + minutes + " " + (minutes === 1 ? "minute" : "minutes");
+                            }
+                        } else if (minutes >= 1) {
+                            minutes = minutes + 1;
+                            countdownText = minutes + " " + (minutes === 1 ? "minute" : "minutes");
+                        } else if (seconds > 0) {
+                            countdownText = seconds + " " + (seconds === 1 ? "second" : "seconds");
+                        }
+                        else
+                        {
+                            countdownText = "Auction ended";
+                        }
                     }
-                    else if (hours > 0) {
-                        countdownText = hours + " " + (hours === 1 ? "hour" : "hours");
-                    }
-                    else if (minutes >= 1) {
-                         minutes += 1;
-                        countdownText = minutes + " " + (minutes === 1 ? "minute" : "minutes");
-                    }
-                    else {
-                        countdownText = seconds + " " + (seconds === 1 ? "second" : "seconds");
-                    }
+                    $(this).text(countdownText);
                 }
-                $(this).text(countdownText);
-            }
-        });
-    }, 1000);
+            });
+        }
+
+    $(document).ready(function () {
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    });
 
     function confirmDelete(auctionId) {
         swal({
@@ -186,7 +199,7 @@
                 $.ajax({
                     url: "/Auction/Delete/" + auctionId,
                     type: "POST",
-                    headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() }, // CSRF token
+                    headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
                     success: function (response) {
                         if (response.success) {
                             swal("Deleted!", "The auction has been deleted.", "success");
