@@ -1,10 +1,5 @@
 ﻿using Auction_Website.BLL.IServices;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Auction_Website.BLL.Services.Singletons
 {

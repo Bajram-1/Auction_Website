@@ -1,4 +1,5 @@
-﻿using Auction_Website.Common;
+﻿using Auction_Website.BLL.IServices;
+using Auction_Website.Common;
 using Auction_Website.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -11,43 +12,69 @@ namespace Auction_Website.UI.Controllers
     public class AdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILoggerService _logger;
 
-        public AdminController(UserManager<ApplicationUser> userManager)
+        public AdminController(UserManager<ApplicationUser> userManager, ILoggerService loggerService)
         {
             _userManager = userManager;
+            _logger = loggerService;
         }
 
-        public async Task<IActionResult> UserList(int? page)
+        [HttpGet]
+        public IActionResult UserList(int? page)
         {
-            int pageSize = 10;
-            int pageNumber = page ?? 1;
+            try
+            {
+                int pageSize = 10;
+                int pageNumber = page ?? 1;
 
-            var users = _userManager.Users.OrderBy(u => u.UserName).ToPagedList(pageNumber, pageSize);
-            return View(users);
+                var users = _userManager.Users
+                    .OrderBy(u => u.UserName)
+                    .ToPagedList(pageNumber, pageSize);
+
+                return View(users);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                TempData["error"] = "An error occurred while retrieving users.";
+                return View("UserList");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> ToggleUserStatus(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-
-            if (user == null)
+            try
             {
-                TempData["error"] = "User not found.";
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                {
+                    TempData["error"] = "User not found.";
+                    return RedirectToAction("UserList");
+                }
+
+                if (user.Email == "admin@auction.com")
+                {
+                    TempData["error"] = "Cannot deactivate the main admin account.";
+                    return RedirectToAction("UserList");
+                }
+
+                user.IsActive = !user.IsActive;
+                await _userManager.UpdateAsync(user);
+
+                _logger.LogInfo($"User {user.UserName} has been {(user.IsActive ? "activated" : "deactivated")}.");
+                TempData["success"] = $"User {user.UserName} has been {(user.IsActive ? "activated" : "deactivated")}.";
+
                 return RedirectToAction("UserList");
             }
-
-            if (user.Email == "admin@auction.com")
+            catch (Exception ex)
             {
-                TempData["error"] = "Cannot deactivate the main admin account.";
+                _logger.LogError(ex);
+                TempData["error"] = "Something went wrong. Please try again later.";
                 return RedirectToAction("UserList");
             }
-
-            user.IsActive = !user.IsActive;
-            await _userManager.UpdateAsync(user);
-
-            TempData["success"] = $"User {user.UserName} has been {(user.IsActive ? "activated" : "deactivated")}.";
-            return RedirectToAction("UserList");
         }
     }
 }

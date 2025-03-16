@@ -1,7 +1,4 @@
-﻿using Auction_Website.BLL.DTO;
-using Auction_Website.BLL.DTO.Requests;
-using Auction_Website.BLL.DTO.ViewModels;
-using Auction_Website.DAL.Entities;
+﻿using Auction_Website.BLL.DTO.Requests;
 
 namespace Auction_Website.BLL.IServices
 {
