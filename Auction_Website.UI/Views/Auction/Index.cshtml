@@ -63,7 +63,7 @@
                             </span>
                         </td>
                         <td>
-                            @if (currentUserId == auction.CreatedByUserId)
+                            @if (currentUserId == auction.CreatedByUserId && auction.CurrentHighestBid == auction.StartingPrice)
                             {
                                 <button class="btn btn-sm btn-danger" onclick="confirmDelete('@auction.AuctionId')">
                                     <i class="fa-solid fa-trash"></i> Delete
@@ -187,7 +187,7 @@
         setInterval(updateCountdown, 1000);
     });
 
-    function confirmDelete(auctionId) {
+        function confirmDelete(auctionId) {
         swal({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -207,7 +207,7 @@
                                 $(this).remove();
                             });
                         } else {
-                            swal("Error!", "Failed to delete the auction.", "error");
+                            swal("Error!", "This auction cannot be deleted because it has active bids.", "error");
                         }
                     },
                     error: function () {

@@ -239,7 +239,7 @@ namespace Auction_Website.BLL.Services
             {
                 var auction = await _unitOfWork.AuctionRepository.GetAuctionByIdAsync(auctionId);
 
-                if (auction == null || auction.CreatedByUserId != userId)
+                if (auction == null || auction.CreatedByUserId != userId || auction.Bids.Any())
                     return false;
 
                 _unitOfWork.AuctionRepository.Delete(auction);
