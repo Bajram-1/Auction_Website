@@ -10,9 +10,8 @@ namespace Auction_Website.BLL
         public static void RegisterBLLServices(this IServiceCollection services)
         {
             services.AddSingleton<ILoggerService, LoggerService>();
-
             services.AddScoped<IAuctionService, AuctionService>();
-            services.AddHostedService<AuctionExpirationService>();
+            services.AddHostedService<AuctionClosingService>();
         }
     }
 }
