@@ -49,6 +49,7 @@ namespace Auction_Website.UI.Areas.Identity.Pages.Account
         {
             [Required]
             [StringLength(19, MinimumLength = 4, ErrorMessage = "Username must be between 4 and 19 characters.")]
+            [RegularExpression(@"^[A-Za-z0-9]+(?:[_\.][A-Za-z0-9]+)*$", ErrorMessage = "Username can only contain letters, numbers, underscores, and dots (not at the beginning or end).")]
             [Display(Name = "Username")]
             public string UserName { get; set; }
 
@@ -59,12 +60,14 @@ namespace Auction_Website.UI.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [StringLength(50, MinimumLength = 2, ErrorMessage = "First name must be between 2 and 50 characters.")]
+            [StringLength(50, MinimumLength = 3, ErrorMessage = "First name must be between 3 and 50 characters.")]
+            [RegularExpression(@"^[A-Za-z]+(?:['-][A-Za-z]+)*$", ErrorMessage = "First name can only contain letters, apostrophes, or hyphens.")]
             [Display(Name = "First Name")]
             public string FirstName { get; set; }
 
             [Required]
-            [StringLength(50, MinimumLength = 2, ErrorMessage = "Last name must be between 2 and 50 characters.")]
+            [StringLength(50, MinimumLength = 3, ErrorMessage = "Last name must be between 3 and 50 characters.")]
+            [RegularExpression(@"^[A-Za-z]+(?:['-][A-Za-z]+)*(?: [A-Za-z]+(?:['-][A-Za-z]+)*)*$", ErrorMessage = "Last name can only contain letters, apostrophes, hyphens, and spaces between words.")]
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
 
